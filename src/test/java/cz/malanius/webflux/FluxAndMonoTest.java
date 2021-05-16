@@ -15,7 +15,7 @@ class FluxAndMonoTest {
         // Only on when subscribing flux emits the data
         stringFlux.subscribe(System.out::println,
                 System.err::println, // Second parameter for handling exceptions
-                () -> System.out.println("Completed.") // Function to call after `onCompleted()`
+                () -> System.out.println("Completed.") // Function to call after `onComplete()`
         );
     }
 
