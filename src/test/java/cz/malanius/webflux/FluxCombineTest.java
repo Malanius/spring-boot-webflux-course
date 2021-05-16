@@ -60,4 +60,17 @@ class FluxCombineTest {
                 .expectNext("A", "B", "C", "D", "E", "F") // will not fail as it maintains order, but waits
                 .verifyComplete();
     }
+
+    @Test
+    void combineUsingZip() {
+        Flux<String> flux1 = Flux.just("A", "B", "C");
+        Flux<String> flux2 = Flux.just("D", "E", "F");
+
+        Flux<String> merged = Flux.zip(flux1, flux2, String::concat).log(); //A,D : B,E : C,F
+
+        StepVerifier.create(merged)
+                .expectSubscription()
+                .expectNext("AD", "BE", "CF") // will fails as order is not preserved
+                .verifyComplete();
+    }
 }
