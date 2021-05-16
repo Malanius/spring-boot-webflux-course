@@ -5,6 +5,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 class MonoFactoryTest {
 
@@ -12,7 +13,7 @@ class MonoFactoryTest {
     void monoJust() {
         Mono<String> mono = Mono.just("Data");
 
-        StepVerifier.create(mono)
+        StepVerifier.create(mono.log())
                 .expectNext("Data")
                 .verifyComplete();
     }
@@ -23,7 +24,17 @@ class MonoFactoryTest {
         Mono<String> mono = Mono.justOrEmpty(Optional.empty());// Same as Mono.empty()
 
         // As mono is empty, there is no data to trigger onNext()
-        StepVerifier.create(mono)
+        StepVerifier.create(mono.log())
+                .verifyComplete();
+    }
+
+    @Test
+    void monoFromSupplier() {
+        Supplier<String> supplier = () -> "Data";
+        Mono<String> mono = Mono.fromSupplier(supplier);
+
+        StepVerifier.create(mono.log())
+                .expectNext("Data")
                 .verifyComplete();
     }
 }
