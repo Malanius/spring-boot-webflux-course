@@ -2,6 +2,7 @@ package cz.malanius.webflux;
 
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 class FluxAndMonoTest {
 
@@ -17,6 +18,18 @@ class FluxAndMonoTest {
                 System.err::println, // Second parameter for handling exceptions
                 () -> System.out.println("Completed.") // Function to call after `onComplete()`
         );
+    }
+
+    @Test
+    void fluxTestElement() {
+        Flux<String> stringFlux = Flux.just("Spring", "Spring Boot", "Reactive Spring")
+                .log();
+
+        StepVerifier.create(stringFlux)
+                .expectNext("Spring")
+                .expectNext("Spring Boot")
+                .expectNext("Reactive Spring")
+                .verifyComplete();
     }
 
 }
