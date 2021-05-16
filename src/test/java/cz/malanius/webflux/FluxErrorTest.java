@@ -40,4 +40,19 @@ class FluxErrorTest {
                 .expectNext("default")
                 .verifyComplete();
     }
+
+    @Test
+    void errorHandlingWithOnErrorMap() {
+        Flux<String> flux = Flux.just("A", "B", "C")
+                .concatWith(Flux.error(new RuntimeException("Exception occurred.")))
+                .concatWith(Flux.just("D"))
+                .onErrorMap(CustomException::new)
+                .log();
+
+        StepVerifier.create(flux)
+                .expectSubscription()
+                .expectNext("A", "B", "C")
+                .expectError(CustomException.class)
+                .verify();
+    }
 }
