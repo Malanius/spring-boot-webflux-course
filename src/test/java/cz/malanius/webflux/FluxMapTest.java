@@ -33,5 +33,16 @@ class FluxMapTest {
                 .verifyComplete();
     }
 
-    
+    @Test
+    void transformUsingMapToLengthRepeat() {
+        Flux<Integer> namesFlux = Flux.fromIterable(namesList) // "adam", "anna", "jack", "jenny"
+                .map(String::length) // 4, 4, 4, 5
+                .repeat(1) // repeats previous flux N times
+                .log();
+
+        StepVerifier.create(namesFlux)
+                .expectNext(4, 4, 4, 5)
+                .expectNext(4, 4, 4, 5)
+                .verifyComplete();
+    }
 }
