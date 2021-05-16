@@ -25,4 +25,19 @@ class FluxErrorTest {
                 .expectNext("default", "default1")
                 .verifyComplete();
     }
+
+    @Test
+    void errorHandlingWithOnErrorReturn() {
+        Flux<String> flux = Flux.just("A", "B", "C")
+                .concatWith(Flux.error(new RuntimeException("Exception occurred.")))
+                .concatWith(Flux.just("D"))
+                .onErrorReturn("default")
+                .log();
+
+        StepVerifier.create(flux)
+                .expectSubscription()
+                .expectNext("A", "B", "C")
+                .expectNext("default")
+                .verifyComplete();
+    }
 }
