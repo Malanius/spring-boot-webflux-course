@@ -45,4 +45,16 @@ class FluxMapTest {
                 .expectNext(4, 4, 4, 5)
                 .verifyComplete();
     }
+
+    @Test
+    void transformUsingMapFilter() {
+        Flux<String> namesFlux = Flux.fromIterable(namesList) // "adam", "anna", "jack", "jenny"
+                .filter(s -> s.length() > 4) // "jenny"
+                .map(String::toUpperCase) // "JENNY"
+                .log();
+
+        StepVerifier.create(namesFlux)
+                .expectNext("JENNY")
+                .verifyComplete();
+    }
 }
