@@ -47,4 +47,14 @@ class FluxAndMonoTest {
                 .verify();
     }
 
+    @Test
+    void fluxTestElementsCount() {
+        Flux<String> stringFlux = Flux.just("Spring", "Spring Boot", "Reactive Spring")
+                .log();
+
+        StepVerifier.create(stringFlux)
+                .expectNextCount(3)
+                .verifyComplete();
+    }
+
 }
