@@ -38,4 +38,12 @@ class FluxFactoryTest {
                 .expectNext("adam", "anna", "jack", "jenny")
                 .verifyComplete();
     }
+
+    @Test
+    void fluxFromRange() {
+        Flux<Integer> rangeFlux = Flux.range(1, 5);
+        StepVerifier.create(rangeFlux.log())
+                .expectNext(1, 2, 3, 4, 5)
+                .verifyComplete();
+    }
 }
