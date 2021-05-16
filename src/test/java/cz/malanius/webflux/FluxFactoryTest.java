@@ -29,4 +29,13 @@ class FluxFactoryTest {
                 .expectNext("adam", "anna", "jack", "jenny")
                 .verifyComplete();
     }
+
+    @Test
+    void fluxFromStream() {
+        Flux<String> namesFlux = Flux.fromStream(namesList.stream());
+
+        StepVerifier.create(namesFlux.log())
+                .expectNext("adam", "anna", "jack", "jenny")
+                .verifyComplete();
+    }
 }
