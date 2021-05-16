@@ -57,4 +57,17 @@ class FluxAndMonoTest {
                 .verifyComplete();
     }
 
+    @Test
+    void fluxTestNextElementsWithVarargs() {
+        Flux<String> stringFlux = Flux.just("Spring", "Spring Boot", "Reactive Spring")
+                .concatWith(Flux.error(new RuntimeException("Exception occurred.")))
+                .log();
+
+        StepVerifier.create(stringFlux)
+                .expectNext("Spring", "Spring Boot", "Reactive Spring")
+                .expectError(RuntimeException.class)
+//                .expectErrorMessage("Exception occurred.")
+                .verify();
+    }
+
 }
