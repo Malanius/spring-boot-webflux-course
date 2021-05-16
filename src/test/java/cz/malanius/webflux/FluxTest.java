@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
-class FluxAndMonoTest {
+class FluxTest {
 
     @Test
     void fluxTest() {
