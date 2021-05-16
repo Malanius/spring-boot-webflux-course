@@ -3,6 +3,7 @@ package cz.malanius.webflux;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
+import reactor.test.scheduler.VirtualTimeScheduler;
 
 import java.time.Duration;
 
@@ -50,15 +51,24 @@ class FluxCombineTest {
 
     @Test
     void combineUsingConcatWithDelay() {
+        VirtualTimeScheduler.getOrSet();
         Flux<String> flux1 = Flux.just("A", "B", "C").delayElements(Duration.ofSeconds(1));
         Flux<String> flux2 = Flux.just("D", "E", "F").delayElements(Duration.ofSeconds(1));
 
         Flux<String> merged = Flux.concat(flux1, flux2).log();
 
-        StepVerifier.create(merged)
+//        StepVerifier.create(merged)
+//                .expectSubscription()
+//                .expectNext("A", "B", "C", "D", "E", "F") // will not fail as it maintains order, but waits
+//                .verifyComplete();
+
+        // This shortens the test from 6s ~200ms to ~200 ms
+        StepVerifier.withVirtualTime(() -> merged)
                 .expectSubscription()
-                .expectNext("A", "B", "C", "D", "E", "F") // will not fail as it maintains order, but waits
+                .thenAwait(Duration.ofSeconds(6))
+                .expectNext("A", "B", "C", "D", "E", "F")
                 .verifyComplete();
+
     }
 
     @Test
