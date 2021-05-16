@@ -9,11 +9,21 @@ import java.util.List;
 
 class FluxFactoryTest {
 
-    List<String> names = Arrays.asList("adam", "anna", "jack", "jenny");
+    String[] namesArray = new String[]{"adam", "anna", "jack", "jenny"};
+    List<String> namesList = Arrays.asList(namesArray);
 
     @Test
     void fluxFromIterable() {
-        Flux<String> namesFlux = Flux.fromIterable(names);
+        Flux<String> namesFlux = Flux.fromIterable(namesList);
+
+        StepVerifier.create(namesFlux.log())
+                .expectNext("adam", "anna", "jack", "jenny")
+                .verifyComplete();
+    }
+
+    @Test
+    void fluxFromArray() {
+        Flux<String> namesFlux = Flux.fromArray(namesArray);
 
         StepVerifier.create(namesFlux.log())
                 .expectNext("adam", "anna", "jack", "jenny")
