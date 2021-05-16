@@ -55,4 +55,22 @@ class FluxErrorTest {
                 .expectError(CustomException.class)
                 .verify();
     }
+
+    @Test
+    void errorHandlingWithOnErrorMapWithRetry() {
+        Flux<String> flux = Flux.just("A", "B", "C")
+                .concatWith(Flux.error(new RuntimeException("Exception occurred.")))
+                .concatWith(Flux.just("D"))
+                .onErrorMap(CustomException::new)
+                .retry(2) // will retry the whole Flux 2 times, totalling in 3 passes
+                .log();
+
+        StepVerifier.create(flux)
+                .expectSubscription()
+                .expectNext("A", "B", "C")
+                .expectNext("A", "B", "C")
+                .expectNext("A", "B", "C")
+                .expectError(CustomException.class)
+                .verify();
+    }
 }
