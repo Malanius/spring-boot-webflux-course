@@ -25,6 +25,17 @@ class FluxAndMonoControllerTest {
     }
 
     @Test
+    void getMono() {
+        Integer expectedValue = 1;
+        testClient.get().uri("/mono")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Integer.class)
+                .consumeWith(response -> assertEquals(expectedValue, response.getResponseBody()));
+    }
+
+    @Test
     void getFluxApproach1() {
         Flux<Integer> flux = testClient.get().uri("/flux")
                 .accept(MediaType.APPLICATION_JSON)
