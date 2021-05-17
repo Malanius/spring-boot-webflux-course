@@ -81,5 +81,17 @@ class FluxAndMonoControllerTest {
 
     @Test
     void getFluxStream() {
+        Flux<Long> flux = testClient.get().uri("/flux-stream")
+                .accept(MediaType.APPLICATION_NDJSON)
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(Long.class)
+                .getResponseBody();
+
+        StepVerifier.create(flux)
+                .expectSubscription()
+                .expectNext(0L, 1L, 2L)
+                .thenCancel()
+                .verify();
     }
 }
