@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.ActiveProfiles;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.Arrays;
@@ -60,9 +61,19 @@ class ItemReactiveRepositoryTest {
 
     @Test
     void getItemByDescription() {
-        StepVerifier.create(repository.findAllByDescription("Universe").log("findAllByDescription: "))
+        StepVerifier.create(repository.findAllByDescription("Universe").log("findAllByDescription"))
                 .expectSubscription()
                 .expectNextCount(1)
+                .verifyComplete();
+    }
+
+    @Test
+    void saveItem() {
+        Item item = new Item(null, "God powers", 777.0);
+        Mono<Item> itemMono = repository.save(item);
+        StepVerifier.create(itemMono.log("saveItem"))
+                .expectSubscription()
+                .expectNextMatches(inserted -> inserted.getId() != null && inserted.getDescription().equals("God powers"))
                 .verifyComplete();
     }
 }
