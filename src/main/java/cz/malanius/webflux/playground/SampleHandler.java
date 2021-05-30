@@ -1,4 +1,4 @@
-package cz.malanius.webflux.handler;
+package cz.malanius.webflux.playground;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;

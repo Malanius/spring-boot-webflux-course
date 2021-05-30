@@ -1,5 +1,6 @@
-package cz.malanius.webflux;
+package cz.malanius.webflux.playground;
 
+import cz.malanius.webflux.CustomException;
 import org.junit.jupiter.api.Test;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
