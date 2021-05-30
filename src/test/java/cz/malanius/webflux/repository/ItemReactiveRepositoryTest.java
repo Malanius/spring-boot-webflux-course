@@ -81,13 +81,44 @@ class ItemReactiveRepositoryTest {
     @Test
     void updateItem() {
         double newPrice = 555.5;
-        Flux<Item> updatedItem = repository.findAllByDescription("Something")
+        Mono<Item> updatedItem = repository.findAllByDescription("Something")
                 .map(item -> item.toBuilder().price(newPrice).build())
                 .flatMap(repository::save);
 
         StepVerifier.create(updatedItem)
                 .expectSubscription()
                 .expectNextMatches(item -> item.getPrice() == newPrice)
+                .verifyComplete();
+    }
+
+    @Test
+    void deleteItemById() {
+        Mono<Void> deletedItem = repository.findById("ABC")
+                .map(Item::getId)
+                .flatMap(repository::deleteById);
+
+        StepVerifier.create(deletedItem.log("deleteItem"))
+                .expectSubscription()
+                .verifyComplete();
+
+        StepVerifier.create(repository.findAll())
+                .expectSubscription()
+                .expectNextCount(items.size() - 1)
+                .verifyComplete();
+    }
+
+    @Test
+    void deleteItem() {
+        Mono<Void> deletedItem = repository.findAllByDescription("Universe")
+                .flatMap(repository::delete);
+
+        StepVerifier.create(deletedItem.log("deleteItem"))
+                .expectSubscription()
+                .verifyComplete();
+
+        StepVerifier.create(repository.findAll())
+                .expectSubscription()
+                .expectNextCount(items.size() - 1)
                 .verifyComplete();
     }
 }
