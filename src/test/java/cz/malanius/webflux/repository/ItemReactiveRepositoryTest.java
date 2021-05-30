@@ -57,4 +57,12 @@ class ItemReactiveRepositoryTest {
                 .expectNextMatches(item -> item.getDescription().equals("Universe"))
                 .verifyComplete();
     }
+
+    @Test
+    void getItemByDescription() {
+        StepVerifier.create(repository.findAllByDescription("Universe").log("findAllByDescription: "))
+                .expectSubscription()
+                .expectNextCount(1)
+                .verifyComplete();
+    }
 }
