@@ -21,7 +21,8 @@ class ItemReactiveRepositoryTest {
     private final List<Item> items = Arrays.asList(
             new Item(null, "Something", 500.5),
             new Item(null, "Anything", 20.0),
-            new Item(null, "Everything", 999.9)
+            new Item(null, "Everything", 999.9),
+            new Item("ABC", "Universe", Double.MAX_VALUE)
     );
 
     @Autowired
@@ -38,7 +39,7 @@ class ItemReactiveRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        repository.deleteAll();
+        repository.deleteAll().block();
     }
 
     @Test
@@ -46,6 +47,14 @@ class ItemReactiveRepositoryTest {
         StepVerifier.create(repository.findAll())
                 .expectSubscription()
                 .expectNextCount(items.size())
+                .verifyComplete();
+    }
+
+    @Test
+    void getItemById() {
+        StepVerifier.create(repository.findById("ABC"))
+                .expectSubscription()
+                .expectNextMatches(item -> item.getDescription().equals("Universe"))
                 .verifyComplete();
     }
 }
