@@ -1,6 +1,7 @@
 package cz.malanius.webflux.repository;
 
 import cz.malanius.webflux.document.Item;
+import lombok.var;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,6 +75,19 @@ class ItemReactiveRepositoryTest {
         StepVerifier.create(itemMono.log("saveItem"))
                 .expectSubscription()
                 .expectNextMatches(inserted -> inserted.getId() != null && inserted.getDescription().equals("God powers"))
+                .verifyComplete();
+    }
+
+    @Test
+    void updateItem() {
+        double newPrice = 555.5;
+        Flux<Item> updatedItem = repository.findAllByDescription("Something")
+                .map(item -> item.toBuilder().price(newPrice).build())
+                .flatMap(repository::save);
+
+        StepVerifier.create(updatedItem)
+                .expectSubscription()
+                .expectNextMatches(item -> item.getPrice() == newPrice)
                 .verifyComplete();
     }
 }
