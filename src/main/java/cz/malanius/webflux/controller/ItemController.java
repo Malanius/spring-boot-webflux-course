@@ -11,7 +11,7 @@ import reactor.core.publisher.Flux;
 
 @Slf4j
 @RestController
-@RequestMapping("items")
+@RequestMapping("/items")
 public class ItemController {
 
     private final ItemReactiveRepository repository;
