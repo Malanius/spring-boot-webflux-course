@@ -13,9 +13,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 @ActiveProfiles("test")
@@ -59,5 +62,35 @@ class ItemControllerTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBodyList(Item.class)
                 .hasSize(items.size());
+    }
+
+    @Test
+    void getAllItems2() {
+        testClient.get().uri("/items")
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBodyList(Item.class)
+                .hasSize(items.size())
+                .consumeWith(response -> {
+                    response.getResponseBody()
+                            .forEach(item -> assertNotNull(item.getId()));
+
+                });
+    }
+
+    @Test
+    void getAllItems3() {
+        Flux<Item> itemFlux = testClient.get().uri("/items")
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .returnResult(Item.class)
+                .getResponseBody();
+
+        StepVerifier.create(itemFlux.log("Test 3"))
+                .expectSubscription()
+                .expectNextCount(4)
+                .verifyComplete();
     }
 }
