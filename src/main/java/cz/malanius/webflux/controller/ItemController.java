@@ -39,4 +39,9 @@ public class ItemController {
     public Mono<Item> createItem(@RequestBody Item item) {
         return repository.save(item);
     }
+
+    @DeleteMapping("/{id}")
+    public Mono<Void> deleteItem(@PathVariable String id) {
+        return repository.deleteById(id);
+    }
 }
