@@ -4,3 +4,6 @@ spring:
       host: ${MONGO_HOST}
       port: ${MONGO_PORT}
       database: ${MONGO_DB_NAME}
+      username: ${MONGO_USER}
+      password: ${MONGO_PASSWORD}
+      authentication-database: ${MONGO_AUT_DB}
