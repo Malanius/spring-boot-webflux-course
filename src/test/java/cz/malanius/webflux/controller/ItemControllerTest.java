@@ -93,4 +93,21 @@ class ItemControllerTest {
                 .expectNextCount(4)
                 .verifyComplete();
     }
+
+    @Test
+    void getOneItem() {
+        testClient.get().uri("/items/ABC")
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.description", "Universe");
+    }
+
+    @Test
+    void getNotFoundItem() {
+        testClient.get().uri("/items/XYZ")
+                .exchange()
+                .expectStatus().isNotFound();
+    }
 }
