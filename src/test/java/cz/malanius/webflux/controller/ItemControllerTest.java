@@ -97,7 +97,7 @@ class ItemControllerTest {
 
     @Test
     void getOneItem() {
-        testClient.get().uri("/items/ABC")
+        testClient.get().uri("/items/{id}", "ABC")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -107,7 +107,7 @@ class ItemControllerTest {
 
     @Test
     void getNotFoundItem() {
-        testClient.get().uri("/items/XYZ")
+        testClient.get().uri("/items/{id}", "XYZ")
                 .exchange()
                 .expectStatus().isNotFound();
     }
@@ -124,6 +124,14 @@ class ItemControllerTest {
                 .jsonPath("$.id").isNotEmpty()
                 .jsonPath("$.description").isEqualTo("God powers")
                 .jsonPath("$.price").isEqualTo(777.77);
+    }
 
+    @Test
+    void deleteItem() {
+        testClient.delete().uri("/items/{id}", "ABC")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Void.class);
     }
 }
