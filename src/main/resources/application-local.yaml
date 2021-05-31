@@ -4,6 +4,3 @@ spring:
       host: localhost
       port: 27017
       database: local
-      username: root
-      password: example
-      authentication-database: admin
