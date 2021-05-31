@@ -127,6 +127,32 @@ class ItemControllerTest {
     }
 
     @Test
+    void updateItem() {
+        double newPrice = 666.66;
+        Item item = new Item(null, "Universe", newPrice);
+        testClient.put().uri("/items/{id}", "ABC")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(item), Item.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.description").isEqualTo("Universe")
+                .jsonPath("$.price").isEqualTo(newPrice);
+    }
+
+    @Test
+    void updateNonExistentItem() {
+        double newPrice = 666.66;
+        Item item = new Item(null, "Universe", newPrice);
+        testClient.put().uri("/items/{id}", "XYZ")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(item), Item.class)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+
+    @Test
     void deleteItem() {
         testClient.delete().uri("/items/{id}", "ABC")
                 .accept(MediaType.APPLICATION_JSON)
