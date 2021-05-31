@@ -40,6 +40,20 @@ public class ItemController {
         return repository.save(item);
     }
 
+    @PutMapping("/{id}")
+    public Mono<ResponseEntity<Item>> updateItem(@PathVariable String id, @RequestBody Item item) {
+        return repository.findById(id)
+                .flatMap(currentItem -> {
+                    Item updatedItem = currentItem.toBuilder()
+                            .price(item.getPrice())
+                            .description(item.getDescription())
+                            .build();
+                    return repository.save(updatedItem);
+                })
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("/{id}")
     public Mono<Void> deleteItem(@PathVariable String id) {
         return repository.deleteById(id);
