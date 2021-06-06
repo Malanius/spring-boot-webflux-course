@@ -1,7 +1,10 @@
 package cz.malanius.webflux.router;
 
 import cz.malanius.webflux.document.Item;
+import cz.malanius.webflux.document.ItemCapped;
+import cz.malanius.webflux.repository.ItemReactiveCappedRepository;
 import cz.malanius.webflux.repository.ItemReactiveRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -10,14 +13,17 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Component
 public class ItemsHandler {
 
     private final ItemReactiveRepository itemsRepository;
+    private final ItemReactiveCappedRepository itemCappedRepository;
 
     @Autowired
-    public ItemsHandler(ItemReactiveRepository itemsRepository) {
+    public ItemsHandler(ItemReactiveRepository itemsRepository, ItemReactiveCappedRepository itemCappedRepository) {
         this.itemsRepository = itemsRepository;
+        this.itemCappedRepository = itemCappedRepository;
     }
 
     public Mono<ServerResponse> getAllItems(ServerRequest request) {
@@ -69,5 +75,12 @@ public class ItemsHandler {
 
     public Mono<ServerResponse> exception(ServerRequest request) {
         throw new RuntimeException("Exception occurred!");
+    }
+
+    public Mono<ServerResponse> itemsStream(ServerRequest request) {
+        log.info("Handling streaming request: {}", request);
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_NDJSON)
+                .body(itemCappedRepository.findItemsBy(), ItemCapped.class);
     }
 }

@@ -169,4 +169,5 @@ class ItemsHandlerTest {
                 .expectBody(String.class);
 //                .isEqualTo("Exception occurred!"); doesn-t work in new spring boot
     }
+
 }
