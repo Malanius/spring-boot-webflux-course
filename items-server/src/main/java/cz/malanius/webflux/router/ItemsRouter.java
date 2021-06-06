@@ -1,5 +1,6 @@
 package cz.malanius.webflux.router;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -9,6 +10,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 
+@Slf4j
 @Configuration
 public class ItemsRouter {
 
@@ -23,8 +25,16 @@ public class ItemsRouter {
     }
 
     @Bean
-    public RouterFunction<ServerResponse> errorRoute(ItemsHandler itemsHandler){
+    public RouterFunction<ServerResponse> errorRoute(ItemsHandler itemsHandler) {
         return RouterFunctions
                 .route(GET("/fn/runtime-exception").and(accept(MediaType.APPLICATION_JSON)), itemsHandler::exception);
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> itemStreamRoute(ItemsHandler itemsHandler) {
+        RouterFunction<ServerResponse> route = RouterFunctions
+                .route(GET("/fn/items/stream").and(accept(MediaType.APPLICATION_JSON)), itemsHandler::itemsStream);
+        log.warn("Route: {}", route);
+        return route;
     }
 }
