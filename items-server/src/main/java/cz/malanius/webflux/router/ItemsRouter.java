@@ -21,4 +21,10 @@ public class ItemsRouter {
                 .andRoute(PUT("/fn/items/{id}").and(accept(MediaType.APPLICATION_JSON)), itemsHandler::updateItem)
                 .andRoute(DELETE("/fn/items/{id}"), itemsHandler::deleteItem);
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> errorRoute(ItemsHandler itemsHandler){
+        return RouterFunctions
+                .route(GET("/fn/runtime-exception").and(accept(MediaType.APPLICATION_JSON)), itemsHandler::exception);
+    }
 }

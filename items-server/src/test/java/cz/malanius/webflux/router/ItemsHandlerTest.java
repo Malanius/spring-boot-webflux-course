@@ -159,4 +159,14 @@ class ItemsHandlerTest {
                 .expectStatus().isOk()
                 .expectBody(Void.class);
     }
+
+    @Test
+    void exception() {
+        testClient.get().uri("/fn/runtime-exception")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().is5xxServerError()
+                .expectBody(String.class);
+//                .isEqualTo("Exception occurred!"); doesn-t work in new spring boot
+    }
 }
