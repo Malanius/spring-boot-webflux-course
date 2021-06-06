@@ -127,6 +127,31 @@ class ItemsHandlerTest {
     }
 
     @Test
+    void updateItem() {
+        double newPrice = 666.66;
+        Item item = new Item(null, "Universe", newPrice);
+        testClient.put().uri("/fn/items/{id}", "ABC")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(item), Item.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.description").isEqualTo("Universe")
+                .jsonPath("$.price").isEqualTo(newPrice);
+    }
+
+    @Test
+    void updateNonExistentItem() {
+        double newPrice = 666.66;
+        Item item = new Item(null, "Universe", newPrice);
+        testClient.put().uri("/fn/items/{id}", "XYZ")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(item), Item.class)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
     void deleteItem() {
         testClient.delete().uri("/fn/items/{id}", "ABC")
                 .accept(MediaType.APPLICATION_JSON)

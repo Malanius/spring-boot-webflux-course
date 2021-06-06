@@ -48,4 +48,22 @@ public class ItemsHandler {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(deletedItem, Void.class);
     }
+
+    public Mono<ServerResponse> updateItem(ServerRequest request) {
+        String id = request.pathVariable("id");
+        Mono<Item> updatedItem = request.bodyToMono(Item.class)
+                .flatMap(item -> itemsRepository.findById(id)
+                        .flatMap(currentItem -> {
+                            Item updated = currentItem.toBuilder()
+                                    .description(item.getDescription())
+                                    .price(item.getPrice())
+                                    .build();
+                            return itemsRepository.save(updated);
+                        }));
+
+        return updatedItem.flatMap(item -> ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(item)))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
 }
