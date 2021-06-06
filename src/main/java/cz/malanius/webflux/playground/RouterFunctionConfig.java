@@ -1,6 +1,5 @@
-package cz.malanius.webflux.router;
+package cz.malanius.webflux.playground;
 
-import cz.malanius.webflux.handler.SampleHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;

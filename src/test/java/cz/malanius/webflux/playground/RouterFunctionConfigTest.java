@@ -1,4 +1,4 @@
-package cz.malanius.webflux.router;
+package cz.malanius.webflux.playground;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

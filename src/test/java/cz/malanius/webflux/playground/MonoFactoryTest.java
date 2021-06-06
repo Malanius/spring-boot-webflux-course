@@ -1,4 +1,4 @@
-package cz.malanius.webflux;
+package cz.malanius.webflux.playground;
 
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
