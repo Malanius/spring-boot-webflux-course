@@ -1,12 +1,15 @@
 package cz.malanius.webflux.itemsclient.controller;
 
 import cz.malanius.webflux.itemsclient.domain.Item;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @RestController
 @RequestMapping("/client")
 public class ItemClientController {
@@ -73,4 +76,34 @@ public class ItemClientController {
                 .bodyToMono(Void.class)
                 .log("Delete item");
     }
+
+    @GetMapping("/retrieve/error")
+    public Flux<Item> errorRetrieve() {
+        return webClient.get().uri("/items/runtime-exception")
+                .retrieve()
+                .onStatus(HttpStatus::is5xxServerError, clientResponse -> {
+                    Mono<String> errorMono = clientResponse.bodyToMono(String.class);
+                    return errorMono.flatMap(errorMessage -> {
+                        log.error("Error message: {}", errorMessage);
+                        throw new RuntimeException(errorMessage);
+                    });
+                })
+                .bodyToFlux(Item.class)
+                .log();
+    }
+
+    @GetMapping("/exchange/error")
+    public Flux<Item> errorExchange() {
+        return webClient.get()
+                .uri("/items/runtime-exception")
+                .exchangeToFlux(clientResponse -> {
+                    if (clientResponse.statusCode().is5xxServerError()) {
+                        return clientResponse.bodyToFlux(String.class)
+                                .flatMap(errorMessage -> Flux.error(new RuntimeException(errorMessage)));
+                    }
+                    return clientResponse.bodyToFlux(Item.class);
+                });
+
+    }
+
 }
