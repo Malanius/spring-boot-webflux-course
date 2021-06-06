@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="SpringBootWebfluxCourseApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <module name="spring-boot-webflux-course" />
+  <configuration default="false" name="server [local]" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="items-server" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="cz.malanius.webflux.SpringBootWebfluxCourseApplication" />
     <option name="ACTIVE_PROFILES" value="local" />
     <option name="ALTERNATIVE_JRE_PATH" />
