@@ -57,11 +57,12 @@ public class ItemDataInitializer implements CommandLineRunner {
     }
 
     private void createCappedCollection() {
-        mongoOperations.dropCollection(ItemCapped.class);
-        mongoOperations.createCollection(ItemCapped.class, CollectionOptions.empty().
-                maxDocuments(20)
-                .size(5_000)
-                .capped());
+        mongoOperations.dropCollection(ItemCapped.class)
+                .then(mongoOperations.createCollection(ItemCapped.class, CollectionOptions.empty().
+                        maxDocuments(20)
+                        .size(5_000)
+                        .capped()))
+                .block();
     }
 
     private void initCappedData() {
