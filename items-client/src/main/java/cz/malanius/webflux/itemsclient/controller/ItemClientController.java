@@ -1,12 +1,15 @@
 package cz.malanius.webflux.itemsclient.controller;
 
 import cz.malanius.webflux.itemsclient.domain.Item;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @RestController
 @RequestMapping("/client")
 public class ItemClientController {
@@ -72,5 +75,20 @@ public class ItemClientController {
                 .retrieve()
                 .bodyToMono(Void.class)
                 .log("Delete item");
+    }
+
+    @GetMapping("/retrieve/error")
+    public Flux<Item> errorRetrieve() {
+        return webClient.get().uri("/items/runtime-exception")
+                .retrieve()
+                .onStatus(HttpStatus::is5xxServerError, clientResponse -> {
+                    Mono<String> errorMono = clientResponse.bodyToMono(String.class);
+                    return errorMono.flatMap(errorMessage -> {
+                        log.error("Error message: {}", errorMessage);
+                        throw new RuntimeException(errorMessage);
+                    });
+                })
+                .bodyToFlux(Item.class)
+                .log();
     }
 }
