@@ -41,4 +41,11 @@ public class ItemsHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(itemsRepository.save(item), Item.class));
     }
+
+    public Mono<ServerResponse> deleteItem(ServerRequest request) {
+        String id = request.pathVariable("id");
+        Mono<Void> deletedItem = itemsRepository.deleteById(id);
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(deletedItem, Void.class);
+    }
 }

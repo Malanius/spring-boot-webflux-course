@@ -17,6 +17,7 @@ public class ItemsRouter {
         return RouterFunctions
                 .route(GET("/fn/items").and(accept(MediaType.APPLICATION_JSON)), itemsHandler::getAllItems)
                 .andRoute(GET("/fn/items/{id}").and(accept(MediaType.APPLICATION_JSON)), itemsHandler::getOneItem)
-                .andRoute(POST("/fn/items").and(accept(MediaType.APPLICATION_JSON)), itemsHandler::createItem);
+                .andRoute(POST("/fn/items").and(accept(MediaType.APPLICATION_JSON)), itemsHandler::createItem)
+                .andRoute(DELETE("/fn/items/{id}"), itemsHandler::deleteItem);
     }
 }

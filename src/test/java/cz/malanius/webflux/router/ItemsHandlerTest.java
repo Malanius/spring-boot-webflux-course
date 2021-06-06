@@ -125,4 +125,13 @@ class ItemsHandlerTest {
                 .jsonPath("$.description").isEqualTo("God powers")
                 .jsonPath("$.price").isEqualTo(777.77);
     }
+
+    @Test
+    void deleteItem() {
+        testClient.delete().uri("/fn/items/{id}", "ABC")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Void.class);
+    }
 }
