@@ -55,4 +55,14 @@ public class ItemClientController {
                 .bodyToMono(Item.class)
                 .log("Create item");
     }
+
+    @PutMapping("/update-item/{id}")
+    public Mono<Item> updateItem(@PathVariable String id, @RequestBody Item item) {
+        return webClient.put().uri("/items/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(item), Item.class)
+                .retrieve()
+                .bodyToMono(Item.class)
+                .log("Create item");
+    }
 }
