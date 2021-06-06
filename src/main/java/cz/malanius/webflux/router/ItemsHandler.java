@@ -34,4 +34,11 @@ public class ItemsHandler {
                 .body(BodyInserters.fromValue(item)))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
+
+    public Mono<ServerResponse> createItem(ServerRequest request) {
+        Mono<Item> newItem = request.bodyToMono(Item.class);
+        return newItem.flatMap(item -> ServerResponse.created(null)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(itemsRepository.save(item), Item.class));
+    }
 }

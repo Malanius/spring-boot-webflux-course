@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.Arrays;
@@ -109,5 +110,19 @@ class ItemsHandlerTest {
         testClient.get().uri("/fn/items/{id}", "XYZ")
                 .exchange()
                 .expectStatus().isNotFound();
+    }
+
+    @Test
+    void createItem() {
+        Item item = new Item(null, "God powers", 777.77);
+        testClient.post().uri("/fn/items")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(item), Item.class)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody()
+                .jsonPath("$.id").isNotEmpty()
+                .jsonPath("$.description").isEqualTo("God powers")
+                .jsonPath("$.price").isEqualTo(777.77);
     }
 }

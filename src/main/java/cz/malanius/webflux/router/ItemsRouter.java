@@ -7,8 +7,7 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
+import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 
 @Configuration
 public class ItemsRouter {
@@ -17,6 +16,7 @@ public class ItemsRouter {
     public RouterFunction<ServerResponse> itemsRoute(ItemsHandler itemsHandler) {
         return RouterFunctions
                 .route(GET("/fn/items").and(accept(MediaType.APPLICATION_JSON)), itemsHandler::getAllItems)
-                .andRoute(GET("/fn/items/{id}").and(accept(MediaType.APPLICATION_JSON)), itemsHandler::getOneItem);
+                .andRoute(GET("/fn/items/{id}").and(accept(MediaType.APPLICATION_JSON)), itemsHandler::getOneItem)
+                .andRoute(POST("/fn/items").and(accept(MediaType.APPLICATION_JSON)), itemsHandler::createItem);
     }
 }
