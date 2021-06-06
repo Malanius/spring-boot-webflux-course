@@ -22,13 +22,6 @@ public class ItemController {
         this.repository = repository;
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handle(RuntimeException e) {
-        log.error("Exception caught in handler!", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(e.getMessage());
-    }
-
     @GetMapping()
     public Flux<Item> getAllItems() {
         return repository.findAll();
