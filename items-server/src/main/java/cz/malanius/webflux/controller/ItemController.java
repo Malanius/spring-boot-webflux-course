@@ -34,6 +34,12 @@ public class ItemController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/runtime-exception")
+    public Flux<Item> runtimeException() {
+        return repository.findAll()
+                .concatWith(Mono.error(new RuntimeException("Exception occurred!")));
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<Item> createItem(@RequestBody Item item) {
