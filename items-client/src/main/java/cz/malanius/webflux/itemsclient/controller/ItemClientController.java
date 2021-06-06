@@ -1,10 +1,8 @@
 package cz.malanius.webflux.itemsclient.controller;
 
 import cz.malanius.webflux.itemsclient.domain.Item;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -46,5 +44,15 @@ public class ItemClientController {
                 .retrieve()
                 .bodyToMono(Item.class)
                 .log("Single item retrieve");
+    }
+
+    @PostMapping("/create-item")
+    public Mono<Item> createItem(@RequestBody Item item) {
+        return webClient.post().uri("/items")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(item), Item.class)
+                .retrieve()
+                .bodyToMono(Item.class)
+                .log("Create item");
     }
 }
