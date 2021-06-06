@@ -91,4 +91,19 @@ public class ItemClientController {
                 .bodyToFlux(Item.class)
                 .log();
     }
+
+    @GetMapping("/exchange/error")
+    public Flux<Item> errorExchange() {
+        return webClient.get()
+                .uri("/items/runtime-exception")
+                .exchangeToFlux(clientResponse -> {
+                    if (clientResponse.statusCode().is5xxServerError()) {
+                        return clientResponse.bodyToFlux(String.class)
+                                .flatMap(errorMessage -> Flux.error(new RuntimeException(errorMessage)));
+                    }
+                    return clientResponse.bodyToFlux(Item.class);
+                });
+
+    }
+
 }
