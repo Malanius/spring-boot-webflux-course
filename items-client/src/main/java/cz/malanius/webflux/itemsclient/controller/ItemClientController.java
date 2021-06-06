@@ -2,10 +2,12 @@ package cz.malanius.webflux.itemsclient.controller;
 
 import cz.malanius.webflux.itemsclient.domain.Item;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/client")
@@ -36,5 +38,13 @@ public class ItemClientController {
                 // Should handle various response code there
                 .exchangeToFlux(clientResponse -> clientResponse.bodyToFlux(Item.class))
                 .log("Items exchange");
+    }
+
+    @GetMapping("/retrieve/item/{id}")
+    public Mono<Item> getOneItem(@PathVariable String id) {
+        return webClient.get().uri("/items/{id}", id)
+                .retrieve()
+                .bodyToMono(Item.class)
+                .log("Single item retrieve");
     }
 }
