@@ -22,6 +22,13 @@ public class ItemController {
         this.repository = repository;
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handle(RuntimeException e) {
+        log.error("Exception caught in handler!", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
+    }
+
     @GetMapping()
     public Flux<Item> getAllItems() {
         return repository.findAll();
@@ -32,6 +39,12 @@ public class ItemController {
         return repository.findById(id)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/runtime-exception")
+    public Flux<Item> runtimeException() {
+        return repository.findAll()
+                .concatWith(Mono.error(new RuntimeException("Exception occurred!")));
     }
 
     @PostMapping
